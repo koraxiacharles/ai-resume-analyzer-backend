@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: ai-resume-analyzer-api
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ai-resume-analyzer-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash-lite
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+databases:
+  - name: ai-resume-analyzer-db
+    plan: free
+    databaseName: resume_analyzer
+    user: resume_analyzer
